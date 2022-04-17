@@ -5,3 +5,4 @@
   
 * 상기 강의 수강 후 강의 내용 정리용 Repository
 * 기초 파이썬 문법부터 딥러닝 강의까지의 내용을 포함함
+* [강의 내용 정리 블로그](https://sabrine.tistory.com/)

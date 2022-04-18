@@ -1,6 +1,8 @@
+# This code is working on google colab
+# needs to be altered using pydrive
 # Mount Drive
-from google.colab import drive
-drive.mount('/gdrive')
+# from google.colab import drive
+# drive.mount('/gdrive')
 
 # Load Data
 import pandas as pd

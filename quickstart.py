@@ -1,4 +1,5 @@
 from __future__ import print_function
+from importlib.resources import Resource
 
 import os.path
 
@@ -51,7 +52,6 @@ def main():
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
-
 
 if __name__ == '__main__':
     main()

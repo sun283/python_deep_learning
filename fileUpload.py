@@ -22,7 +22,6 @@ def get_children(root_folder_id):
     str = "\'" + root_folder_id + "\'" + " in parents and trashed=false"
     file_list = drive.ListFile({'q': str}).GetList()
     return file_list
-
 def get_folder_id(root_folder_id, root_folder_title):
     file_list = get_children(root_folder_id)
     for file in file_list:

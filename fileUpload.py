@@ -43,7 +43,6 @@ def populate_tree_recursively(tree,parent_id):
 ## Constant
 ROOT_FOLDER_TITLE = "my-top-level-root-folder-name"
 ROOT_FOLDER_ID = get_folder_id("root", ROOT_FOLDER_TITLE)
-# FOLDER_ID
 FOLDER_ID = 'Google Drive Folder Id'
 FILES = (
     ('file.csv'),

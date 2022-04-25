@@ -3,6 +3,8 @@ from time import sleep
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from treelib import Node, Tree
+import pandas as pd
+import os
 
 # switch current directory into the directory where the script exists
 # os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -15,8 +17,7 @@ gauth.LocalWebserverAuth()
 # drive = GoogleDrive(gauth) create a Google Drive object to handle file. You will be using this object to list and create file.
 drive = GoogleDrive(gauth)
 
-# fileList = drive.ListFile({'q': "'<folder ID>' in parents and trashed=false"}).GetList()
-# print(fileList)
+## Check file hierarchy structure -- need to modify
 
 def get_children(root_folder_id):
     str = "\'" + root_folder_id + "\'" + " in parents and trashed=false"
@@ -39,33 +40,86 @@ def populate_tree_recursively(tree,parent_id):
     if(len(children) > 0):
         for child in children:
             populate_tree_recursively(tree, child['id'])
-
-## Constant
+            
 ROOT_FOLDER_TITLE = "my-top-level-root-folder-name"
 ROOT_FOLDER_ID = get_folder_id("root", ROOT_FOLDER_TITLE)
-FOLDER_ID = 'Google Drive Folder Id'
+
+### Create the tree and the top level node ###
+# def main():
+#     root_folder_title = "my-top-level-root-folder-name"
+#     root_folder_id = get_folder_id("root", root_folder_title)
+
+#     tree = Tree()
+#     tree.create_node(root_folder_title, root_folder_id)
+#     populate_tree_recursively(tree, root_folder_id)
+#     tree.show()
+
+## Constant
+FOLDER_ID = '1h4eq0TbHX6DUIwcXQu52WbfLiHT6EtWQ'
+INPUT_PREFIX = r'C:\\Users\\MSI\\data\\TCS_영업소간통행시간_1시간_1개월_2021'
+OUTPUT_PREFIX = r'C:\\Users\\MSI\\data_2021'
+OUTPUT_EXTENSION = '.csv'
+
+## Variable
+output_dataframes = []
 FILES = (
-    ('file.csv'),
+    ('data_2021.csv'),
 )
 
-tree = Tree()
-tree.create_node(ROOT_FOLDER_TITLE, ROOT_FOLDER_ID)
-populate_tree_recursively(tree, ROOT_FOLDER_ID)
-tree.show()
+## Function
+# Retreive data from Jan. to Dec.
+def generateData(month):
+    month_string = str(month)
+    length_month_string = len(month_string)
+    if length_month_string == 1:
+        month_string = '0' + month_string
+    input_file = INPUT_PREFIX + month_string + OUTPUT_EXTENSION
+    output_file = OUTPUT_PREFIX + month_string + OUTPUT_EXTENSION
+    print('INPUT : ' + input_file, '  OUTPUT : ' + output_file)
+    data = pd.read_csv(input_file, sep=",", encoding="euc-kr")
+    # Clean : 결측치, 오류치를 제외
+    data_clean = data.drop(['Unnamed: 6'], axis='columns')
+    data_clean = data_clean[data_clean.통행시간 > 0]
+    # Select : 필요한 컬럼만 선택
+    # 101: 서울, 105: 기흥, 110: 목천, 115: 대전, 120: 황간, 125: 남구미, 130: 동김천, 135: 경주, 140: 부산
+    df_data = pd.DataFrame(data_clean, columns=["집계일자", "집계시", "출발영업소코드", "도착영업소코드", "통행시간"])
+    start_from_101 = df_data[df_data.출발영업소코드 == 101]
+    start_from_101_to_140 = start_from_101[start_from_101['도착영업소코드'].isin([105,110,115,120,125,130,135,140])]
+    # Convert : 집계일자를 요일로 변환하여 삽입
+    start_from_101_to_140 = start_from_101_to_140.assign(요일=pd.to_datetime(start_from_101_to_140['집계일자'], format='%Y%m%d').dt.dayofweek)
+    # Sort
+    start_from_101_to_140.sort_values(by=['집계일자', '집계시'])
+    # Save per month
+    start_from_101_to_140.to_csv(output_file, index=None, header=True, encoding = 'utf-8')
+    output_dataframes.append(start_from_101_to_140)
+
+# Save into Google Drive
+def uploadData():
+    for file_title in FILES :
+        file = drive.CreateFile({'title': file_title, "parents": [{"id": FOLDER_ID}]})
+        # file.SetContentFile("file.csv") will open the specified file name and set the content of the file to the GoogleDriveFile object. 
+        file.SetContentFile(file_title)
+        # file.Upload() to complete the upload process.
+        file.Upload()
+        print('Created file %s with mimeType %s' % (file['title'], file['mimeType']))
 
 ## Upload file in Google Drive
 # file = drive.CreateFile({'title': 'file.csv', "parents": [{"id": FOLDER_ID}]})
 # file.SetContentString('TEST')
 # file.Upload()
+## Refs functions
+# sleep(10)
+# file.Trash()  # Move file to trash.
+# file.UnTrash()  # Move file out of trash.
+# file.Delete()  # Permanently delete the file.
 
-for file_title in FILES :
-    file = drive.CreateFile({'title': file_title, "parents": [{"id": FOLDER_ID}]})
-    # file.SetContentFile("file.csv") will open the specified file name and set the content of the file to the GoogleDriveFile object. 
-    file.SetContentFile(file_title)
-    # file.Upload() to complete the upload process.
-    file.Upload()
-    print('Created file %s with mimeType %s' % (file['title'], file['mimeType']))
-    # sleep(10)
-    # file.Trash()  # Move file to trash.
-    # file.UnTrash()  # Move file out of trash.
-    # file.Delete()  # Permanently delete the file.
+def main():
+    for month in range(1,13):
+        generateData(month)
+    output_data = pd.concat(output_dataframes, ignore_index=True, sort=False)
+    final = OUTPUT_PREFIX + OUTPUT_EXTENSION
+    output_data.to_csv(final, index=None, header=True, encoding = 'utf-8')
+    uploadData()
+    
+if __name__ == "__main__":
+    main()

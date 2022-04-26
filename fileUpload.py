@@ -4,67 +4,29 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from treelib import Node, Tree
 import pandas as pd
-import os
-
-# switch current directory into the directory where the script exists
-# os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 ## Google OAuth
 gauth = GoogleAuth()
-# gauth.LocalWebserverAuth() will fire up the browser and ask for your authentication. Choose the google account you want to access and authorize the app.
+# gauth.LocalWebserverAuth() will fire up the browser and ask for your authentication. 
+# Choose the google account you want to access and authorize the app.
 gauth.LocalWebserverAuth()
 # gauth.CommandLineAuth()
-# drive = GoogleDrive(gauth) create a Google Drive object to handle file. You will be using this object to list and create file.
+# drive = GoogleDrive(gauth) create a Google Drive object to handle file. 
+# You will be using this object to list and create file.
 drive = GoogleDrive(gauth)
 
-## Check file hierarchy structure -- need to modify
-
-def get_children(root_folder_id):
-    str = "\'" + root_folder_id + "\'" + " in parents and trashed=false"
-    file_list = drive.ListFile({'q': str}).GetList()
-    return file_list
-def get_folder_id(root_folder_id, root_folder_title):
-    file_list = get_children(root_folder_id)
-    for file in file_list:
-        if(file['title'] == root_folder_title):
-            return file['id']
-def add_children_to_tree(tree, file_list, parent_id):
-    for file in file_list:
-        tree.create_node(file['title'], file['id'], parent=parent_id)
-        # For debugging
-        # print('parent: %s, title: %s, id: %s' % (parent_id, file['title'], file['id']))
-### Go down the tree until you reach a leaf ###
-def populate_tree_recursively(tree,parent_id):
-    children = get_children(parent_id)
-    add_children_to_tree(tree, children, parent_id)
-    if(len(children) > 0):
-        for child in children:
-            populate_tree_recursively(tree, child['id'])
-            
-ROOT_FOLDER_TITLE = "my-top-level-root-folder-name"
-ROOT_FOLDER_ID = get_folder_id("root", ROOT_FOLDER_TITLE)
-
-### Create the tree and the top level node ###
-# def main():
-#     root_folder_title = "my-top-level-root-folder-name"
-#     root_folder_id = get_folder_id("root", root_folder_title)
-
-#     tree = Tree()
-#     tree.create_node(root_folder_title, root_folder_id)
-#     populate_tree_recursively(tree, root_folder_id)
-#     tree.show()
-
-## Constant
-FOLDER_ID = '1h4eq0TbHX6DUIwcXQu52WbfLiHT6EtWQ'
-INPUT_PREFIX = r'C:\\Users\\MSI\\data\\TCS_영업소간통행시간_1시간_1개월_2021'
-OUTPUT_PREFIX = r'C:\\Users\\MSI\\data_2021'
+## Constants
+FOLDER_ID = '1EhNp66Ddm8nXiM04Q1UbuvklFKdcaoO9'
+INPUT_PREFIX = 'C:\\Users\\MSI\\data\\TCS_영업소간통행시간_1시간_1개월_2021'
+OUTPUT_PREFIX = 'C:\\Users\\MSI\\data_2021'
 OUTPUT_EXTENSION = '.csv'
 
 ## Variable
 output_dataframes = []
-FILES = (
-    ('data_2021.csv'),
-)
+# FILES = (
+#     ('data_2021.csv'),
+# )
+FILES = []
 
 ## Function
 # Retreive data from Jan. to Dec.
@@ -90,36 +52,40 @@ def generateData(month):
     # Sort
     start_from_101_to_140.sort_values(by=['집계일자', '집계시'])
     # Save per month
-    start_from_101_to_140.to_csv(output_file, index=None, header=True, encoding = 'utf-8')
+    start_from_101_to_140.to_csv(output_file, index=None, header=True, encoding='euc-kr')
     output_dataframes.append(start_from_101_to_140)
 
 # Save into Google Drive
 def uploadData():
     for file_title in FILES :
-        file = drive.CreateFile({'title': file_title, "parents": [{"id": FOLDER_ID}]})
+        file = drive.CreateFile({'title': file_title, "mimeType": "text/csv", "parents": [{"id": FOLDER_ID}]})
         # file.SetContentFile("file.csv") will open the specified file name and set the content of the file to the GoogleDriveFile object. 
         file.SetContentFile(file_title)
         # file.Upload() to complete the upload process.
         file.Upload()
         print('Created file %s with mimeType %s' % (file['title'], file['mimeType']))
 
-## Upload file in Google Drive
+## Upload file in Google Drive(Single File)
 # file = drive.CreateFile({'title': 'file.csv', "parents": [{"id": FOLDER_ID}]})
 # file.SetContentString('TEST')
 # file.Upload()
-## Refs functions
-# sleep(10)
-# file.Trash()  # Move file to trash.
-# file.UnTrash()  # Move file out of trash.
-# file.Delete()  # Permanently delete the file.
 
 def main():
+    global FILES
     for month in range(1,13):
         generateData(month)
     output_data = pd.concat(output_dataframes, ignore_index=True, sort=False)
     final = OUTPUT_PREFIX + OUTPUT_EXTENSION
-    output_data.to_csv(final, index=None, header=True, encoding = 'utf-8')
+    output_data.to_csv(final, index=None, header=True, encoding='euc-kr')
+    str_split = OUTPUT_PREFIX.split('\\')
+    FILES.append(str_split[3] + OUTPUT_EXTENSION)
+    FILES = tuple(FILES)
     uploadData()
-    
+    ## Refs functions
+    # sleep(10)
+    # file.Trash()  # Move file to trash.
+    # file.UnTrash()  # Move file out of trash.
+    # file.Delete()  # Permanently delete the file.
+
 if __name__ == "__main__":
     main()

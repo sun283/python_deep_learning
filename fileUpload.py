@@ -16,7 +16,7 @@ gauth.LocalWebserverAuth()
 drive = GoogleDrive(gauth)
 
 ## Constants
-FOLDER_ID = '1EhNp66Ddm8nXiM04Q1UbuvklFKdcaoO9'
+FOLDER_ID = 'google drive folder id'
 INPUT_PREFIX = 'C:\\Users\\MSI\\data\\TCS_영업소간통행시간_1시간_1개월_2021'
 OUTPUT_PREFIX = 'C:\\Users\\MSI\\data_2021'
 OUTPUT_EXTENSION = '.csv'

@@ -2,7 +2,6 @@
 from time import sleep
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from treelib import Node, Tree
 import pandas as pd
 
 ## Google OAuth
@@ -23,9 +22,6 @@ OUTPUT_EXTENSION = '.csv'
 
 ## Variable
 output_dataframes = []
-# FILES = (
-#     ('data_2021.csv'),
-# )
 FILES = []
 
 ## Function
@@ -64,6 +60,12 @@ def uploadData():
         # file.Upload() to complete the upload process.
         file.Upload()
         print('Created file %s with mimeType %s' % (file['title'], file['mimeType']))
+        ## Refs functions
+        sleep(10)
+        # file.Trash()  # Move file to trash.
+        # file.UnTrash()  # Move file out of trash.
+        # Permanently delete the file.
+        file.Delete()
 
 ## Upload file in Google Drive(Single File)
 # file = drive.CreateFile({'title': 'file.csv', "parents": [{"id": FOLDER_ID}]})
@@ -81,11 +83,6 @@ def main():
     FILES.append(str_split[3] + OUTPUT_EXTENSION)
     FILES = tuple(FILES)
     uploadData()
-    ## Refs functions
-    # sleep(10)
-    # file.Trash()  # Move file to trash.
-    # file.UnTrash()  # Move file out of trash.
-    # file.Delete()  # Permanently delete the file.
 
 if __name__ == "__main__":
     main()

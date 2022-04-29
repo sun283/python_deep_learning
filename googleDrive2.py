@@ -38,7 +38,7 @@ print('Created file %s with mimeType %s' % (file1['title'], file1['mimeType']))
 
 ## Accessing files in folders
 # You can use the ListFile to get the files but this time change the root to file ID.
-fileList = drive.ListFile({'q': "'1IDZRVrOrW2UrhzsMSq3jJXfhaEL0F42m' in parents and trashed=false"}).GetList()
+fileList = drive.ListFile({'q': "'google drive folder id' in parents and trashed=false"}).GetList()
 for file in fileList:
   print('Title: %s, ID: %s' % (file['title'], file['id']))
    # Get the folder ID that you want

@@ -1,5 +1,6 @@
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from treelib import Node, Tree
 import os
 
 # https://www.python2.net/questions-43773.htm
@@ -16,34 +17,40 @@ drive = GoogleDrive(gauth)
 # We capture the folder ID of the folder you would like to upload files to. 
 # In this case, file['title'] needs to be match with the folder I would upload the files to.
 # View all folders and file in your Google Drive
-fileList = drive.ListFile({'q': "'<folder ID>' in parents and trashed=false"}).GetList()
+      
+# 1) Choose your starting point by inserting file name
+folder_title = "your-starting-point-folder"
 fileID = ''
-for file in fileList:
-  print('Title: %s, ID: %s' % (file['title'], file['id']))
-  # Get the folder ID that you want
-  if(file['title'] == "google drive id"):
-      fileID = file['id']
+
+# 2) Retrieve the folder id - start searching from root
+## Accessing files in folders
+# You can use the ListFile to get the files but this time change the root to file ID.
+file_list = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
+for file in file_list:
+    print('Title: %s, ID: %s' % (file['title'], file['id']))
+    # Get the folder ID that you want
+    if(file['title'] == folder_title):
+        fileID = file['id']
+        break
+
+# 3) Build string dynamically (need to use escape characters to support single quote syntax)
+str = "\'" + fileID + "\'" + " in parents and trashed=false"    
+
+# 4) Starting iterating over files
+file_list = drive.ListFile({'q': str}).GetList()
+for file in file_list:
+    print('title: %s, id: %s' % (file['title'], file['id']))
 
 ## Listing and uploading file in Google Drive
 # drive.CreateFile() accepts metadata(dict.) as input to initialize a GoogleDriveFile. 
 # I initialized a file with "mimeType" : "text/csv" and "id" : fileID. 
 # This id will specific where the file will be uploaded to. 
 # In this case, the file will be uploaded to the folder To Share.
-
 file1 = drive.CreateFile({"mimeType": "text/csv", "parents": [{"kind": "drive#fileLink", "id": fileID}]})
 file1.SetContentFile("data/data_2021.csv")
 # Upload the file.
 file1.Upload()
 print('Created file %s with mimeType %s' % (file1['title'], file1['mimeType']))   
-
-## Accessing files in folders
-# You can use the ListFile to get the files but this time change the root to file ID.
-fileList = drive.ListFile({'q': "'google drive folder id' in parents and trashed=false"}).GetList()
-for file in fileList:
-  print('Title: %s, ID: %s' % (file['title'], file['id']))
-   # Get the folder ID that you want
-  if(file['title'] == "picture"):
-      fileID = file['id']
 
 # Initialize GoogleDriveFile instance with file id.
 file2 = drive.CreateFile({'id': fileID})
@@ -54,40 +61,6 @@ file2.Delete()  # Permanently delete the file.
 # we can get into folder picture inside the folder To Share.
 # create a GoogleDriveFile with the specified file ID. Use Trash() to move file to trash. You can also use Delete() to delete the file permanently.
 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
-
-# 1) Choose your starting point by inserting file name
-folder_title = "your-starting-point-folder"
-folder_id = ''
-
-# 2) Retrieve the folder id - start searching from root
-file_list = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
-for file in file_list:
-    if(file['title'] == folder_title):
-        folder_id = file['id']
-        break
-
-# 3) Build string dynamically (need to use escape characters to support single quote syntax)
-str = "\'" + folder_id + "\'" + " in parents and trashed=false"    
-
-# 4) Starting iterating over files
-file_list = drive.ListFile({'q': str}).GetList()
-for file in file_list:
-    print('title: %s, id: %s' % (file['title'], file['id']))
-    
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
-
-from treelib import Node, Tree
 ### Some basic helper functions ### 
 def get_children(root_folder_id):
     str = "\'" + root_folder_id + "\'" + " in parents and trashed=false"
@@ -113,7 +86,6 @@ def populate_tree_recursively(tree,parent_id):
     if(len(children) > 0):
         for child in children:
             populate_tree_recursively(tree, child['id'])
-
 
 ### Create the tree and the top level node ###
 def main():

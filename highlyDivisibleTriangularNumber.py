@@ -14,3 +14,25 @@
 # We can see that 28 is the first triangle number to have over five divisors.
 # What is the value of the first triangle number to have over five hundred divisors?
 
+def tau(num):
+    n,i,p = num,2,1;
+    if (num == 1): return 1
+    while i * i <= n:
+        c = 1;
+        while n % i == 0:
+            n/= i
+            c+=1
+        i+=1
+        p*= c;
+    if n == num or n > 1:
+        p*= 1 + 1
+    return p;
+
+def solution(x):
+    n, d = 1, 1
+    while (tau(d) <= x):
+        n+=1
+        d+=n
+    return d;
+
+solution(500);

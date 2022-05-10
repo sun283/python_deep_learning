@@ -35,4 +35,5 @@ def solution(x):
         d+=n
     return d;
 
-solution(500);
+# solution(500);
+print(solution(3));

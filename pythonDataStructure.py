@@ -499,6 +499,7 @@ s2 = {3,4,5}
 # they can be converted as list then sorted
 # using curly braces
 
+# 1. constructors : creating dictionaries
 x = {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
 # print(x)
 # {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
@@ -511,3 +512,54 @@ x = dict(pork=25.3, beef=33.8, chicken=22.7)
 # print(x)
 # {'pork': 25.3, 'beef': 33.8, 'chicken': 22.7}
 
+# 2. dict operations
+# add or update item
+x['shrimp'] = 38.2
+# print(x)
+# {'pork': 25.3, 'beef': 33.8, 'chicken': 22.7, 'shrimp': 38.2}
+
+x['shrimp'] = 38
+# print(x)
+# {'pork': 25.3, 'beef': 33.8, 'chicken': 22.7, 'shrimp': 38}
+
+# delete an item
+del(x['shrimp'])
+# print(x)
+# {'pork': 25.3, 'beef': 33.8, 'chicken': 22.7}
+
+# get length of dict x
+# print(len(x))
+# 3
+
+# delete all items from dict x
+x.clear()
+# print(x)
+# {}
+
+# delete dict x
+del(x)
+# print(x)
+# NameError: name 'x' is not defined
+
+# 3. accessing keys and values in a dict
+# Not compatible with Python2
+y = {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
+
+# print(y.keys())
+# dict_keys(['port', 'beef', 'chicken'])
+
+# print(y.values())
+# dict_values([25.3, 33.8, 22.7])
+
+# print(y.items())
+# dict_items([('port', 25.3), ('beef', 33.8), ('chicken', 22.7)])
+
+# check membership in y_keys(only looks in keys, not values)
+# print('beef' in y)
+# True
+
+# check membership in y_values
+# print('clams' in y.values())
+# False
+
+# iterating a dict : note, items are in random order.

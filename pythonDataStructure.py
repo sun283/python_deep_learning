@@ -250,6 +250,7 @@ a, b, c, d = z
 # - Grow and shrink size as needed
 # - Sequence type
 # - Sortable
+# using square bracket
 
 # 1. constructors : creating a new list
 x = list()
@@ -366,17 +367,147 @@ x.sort(reverse=True)
 # Immutable(can't add/change)
 # Useful for fixed data
 # Faster than Lists
-# Sequence type
+# Sequence type : all listed sequence functions above can be used.
+# using parenthesis
 
 # 1. constructors : creating new tuples.
 x = ()
-print(x)
+# print(x)
+# ()
 
 x = (1,2,3)
-print(x)
+# print(x)
+# (1, 2, 3)
 
 x = 1,2,3
+# print(x)
+# (1, 2, 3)
+
 x = 2,
-# 
-print(x, type(x))
+# the comma tells Python htat it's tuple
+# print(x, type(x))
+# (2,) <class 'tuple'>
+
+list1 = [2,4,6]
+x = tuple(list1)
+# print(x, type(x))
+# (2, 4, 6) <class 'tuple'>
+
+# 2. tuples are immutable, but member objects may be mutable.
+x = (1,2,3)
+# fails 'tuple' object doesn't support item deletion
+# del(x[1])
+# fails 'tuple' object does not support item assignment
+# x[1] = 8
+
+# a tuple where the first item is a list
+y = ([1,2],3)
+# delete the 2
+# the list within the tuple is mutable
+del(y[0][1])
+# print(y)
+# ([1], 3)
+
+# 3. concatenating two tuples works
+y += (4,)
+# print(y)
+# ([1], 3, 4)
+
+# [Sets]
+# - Store non-duplicate items(unique items are what sets are ideal for)
+# - Very fast access vs lists
+# to find an item in the list, need to compare list length times, 
+# set hashes item, so it can find an item instantly using hash
+# Great for checking membership
+# - Math Set ops(union, intersect)
+# - Sets are Unordered : you cannot sort
+
+# 1. constructors: creating new sets
+x = {3,5,3,5}
+# print(x)
+# {3, 5}
+
+y = set()
+# print(y)
+# set()
+
+list1 = [2,3,4]
+z = set(list1)
+# print(z)
+# {2, 3, 4}
+    
+# 2. set operations
+x = {3,5,8}
+# print(x)
+# {8, 3, 5}
+x.add(7)
+# print(x)
+# {8, 3, 5, 7}
+
+x.remove(3)
+# print(x)
+# {8, 5, 7}
+
+# get length of set x
+# print(len(x))
+# 3
+
+# check membership in x
+# print(5 in x)
+# True
+
+# pop random item from set x
+# print(x.pop(), x)
+# 8 {5, 7}
+
+# delete all items from set x
+x.clear()
+# print(x)
+# set()
+
+# 3. Mathematical set operations
+s1 = {1,2,3}
+s2 = {3,4,5}
+# - intersection (AND) : set1 & set2
+# print(s1 & s2)
+# {3}
+
+# - union(OR) : set1 | set2
+# print(s1 | s2)
+# {1, 2, 3, 4, 5} 
+
+# - symmetric difference(XOR) : set1 ^ set2 difference 
+# print(s1 ^ s2)
+# {1, 2, 4, 5}
+
+# (in set1 but not set2) : set1 - set2
+# print(s1 - s2)
+# {1, 2}
+
+# - subset(set2 contains set1) : set1 <= set2
+# print(s1 <= s2)
+# False
+
+# - superset(set1 contains set2) : set1 >= set2
+# print(s1 > s2)
+# False
+
+# [Dictionaries(dict)]
+# - Key/Value paris
+# - Associative array, like JavaHashMap
+# - Dicts are Unordered : you cannot sort
+# they can be converted as list then sorted
+# using curly braces
+
+x = {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
+# print(x)
+# {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
+
+x = dict([('port', 25.3), ('beef', 33.8), ('chicken', 22.7)])
+# print(x)
+# {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
+
+x = dict(pork=25.3, beef=33.8, chicken=22.7)
+# print(x)
+# {'pork': 25.3, 'beef': 33.8, 'chicken': 22.7}
 

@@ -243,7 +243,7 @@ a, b, c, d = z
 # print(a, b, c, d)
 # Kevin Niklas Jenny Craig
 
-## Data Structures
+## Python Built-in Data Structures
 # [Lists]
 # - General purpose
 # - Most widely used data structure
@@ -563,3 +563,18 @@ y = {'port': 25.3, 'beef': 33.8, 'chicken': 22.7}
 # False
 
 # iterating a dict : note, items are in random order.
+def printKeyValue():
+    for key in y:
+        print(key, y[key])
+# port 25.3
+# beef 33.8
+# chicken 22.7
+
+# item will return a tuple which has a key and a value pair
+def printKeyValue2():
+    for k, v in y.items():
+        print(k, v)
+# port 25.3
+# beef 33.8
+# chicken 22.7
+

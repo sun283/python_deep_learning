@@ -265,3 +265,4 @@ print(m.pop())
 # 95
 
 print(m.peek())
+# 10?

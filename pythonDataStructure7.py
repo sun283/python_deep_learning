@@ -117,9 +117,9 @@ for i in range(ord('A'), ord('K')):
     g.add_edge(Vertex(chr(i)))
 # An edge consists of two vertex names. Here we iterate through a list of edges 
 # and add each to the graph
-# This print_graph method doesn't give a very good visulaization of the graph, but ti does show
+# This print_graph method doesn't give a very good visulaization of the graph, but it does show
 # the neighbors for each vertex.
-edges = ['AB', 'AE', 'BF', 'CG', 'DE', 'DH', 'EH', 'FG', '']
+edges = ['AB', 'AE', 'BF', 'CG', 'DE', 'DH', 'EH', 'FG', 'FI', 'FJ', 'GJ', 'IF', 'IH']
 for edge in edges:
     g.add_edge(edge[0], edge[1])
     

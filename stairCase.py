@@ -10,3 +10,18 @@
 # What if, instead of being able to climb 1 or 2 steps at a time, 
 # you could climb any number from a set of positive integers X? 
 # For example, if X = {1, 3, 5}, you could climb 1, 3, or 5 steps at a time.
+def countWays(n):
+    res = [0] * (n + 2)
+    res[0] = 1
+    res[1] = 1
+    res[2] = 2
+ 
+    for i in range(3, n + 1):
+        res[i] = res[i - 1] + res[i - 2] + res[i - 3]
+ 
+    return res[n]
+ 
+# Driver code
+n = 4
+x = [1, 3, 5]
+print(countWays(n))

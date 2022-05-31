@@ -19,10 +19,8 @@ class Node:
         self.left = None
         self.right = None
  
- 
-# This function increments count by number of single
-# valued subtrees under root. It returns true if subtree
-# under root is Singly, else false.
+# This function increments count by number of single valued subtrees under root. 
+# It returns true if subtree under root is Singly, else false.
 def countSingleRec(root , count):
     # Return False to indicate None
     if root is None :
@@ -32,13 +30,11 @@ def countSingleRec(root , count):
     left = countSingleRec(root.left , count)
     right = countSingleRec(root.right , count)
      
-    # If any of the subtrees is not singly, then this
-    # cannot be singly
+    # If any of the subtrees is not singly, then this cannot be singly
     if left == False or right  == False :
         return False
      
-    # If left subtree is singly and non-empty , but data
-    # doesn't match
+    # If left subtree is singly and non-empty , but data doesn't match
     if root.left and root.data != root.left.data:
         return False
  
@@ -46,12 +42,10 @@ def countSingleRec(root , count):
     if root.right and root.data != root.right.data:
         return False
  
-    # If none of the above conditions is True, then
-    # tree rooted under root is single valued,increment
-    # count and return true
+    # If none of the above conditions is True, then tree rooted under root is single valued, 
+    # increment count and return true
     count[0] += 1
     return True
- 
  
 # This function mainly class countSingleRec()
 # after initializing count as 0
@@ -66,7 +60,6 @@ def countSingle(root):
  
  
 # Driver program to test
- 
 """Let us construct the below tree
             5
           /   \

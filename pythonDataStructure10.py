@@ -67,5 +67,3 @@ class SignlyLinkedList():
                 self.head.next = nextn
             else:
                 self.head = node
-        else:
-            

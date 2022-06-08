@@ -23,7 +23,6 @@ def solution2(array, sum):
         if s in array[i+1 : len(array)]:
             return (True, array[i], s)
     return False
-
 # print(solution2(array, sum))
 
 def solution3(array, sum):
@@ -37,7 +36,6 @@ def solution3(array, sum):
         elif array[i] + array[j] == sum:
             return (array[i] , " + ", array[j], "=", array[i] + array[j])
     return False
-
 # print(solution3(array, sum))
 
 def solution4(array, sum):
@@ -51,7 +49,6 @@ def solution4(array, sum):
         elif array[i] + array[j] == sum:
             return (array[i] , " + ", array[j], "=", array[i] + array[j])
     return False
-
 # print(solution4(array, sum))
 
 
@@ -70,7 +67,6 @@ def solution5(arry, sum):
         elif arry[i] + arry[j] == sum:
             return (arry[i] , " + ", arry[j], "=", arry[i] + arry[j])
     return False
-
 # print(solution5(arry, sum))
 
 def solution6(arry, sum):
@@ -81,7 +77,6 @@ def solution6(arry, sum):
             return True
         else:
             complement.append(arry[i])
-    return False
-                
+    return False        
 # print(solution6(arry, sum))
 
